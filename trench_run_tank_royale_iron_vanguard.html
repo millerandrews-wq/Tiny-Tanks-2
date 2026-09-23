@@ -1,0 +1,188 @@
+<!-- ... existing code ... -->
+          <div id="hud-storm-banner" class="hidden mt-2 bg-red-950/90 text-red-300 border border-red-500 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider animate-pulse flex items-center gap-1.5 shadow-xl">
+            <i class="ph-bold ph-warning-octagon text-sm"></i> DANGER: STORM RADIUS COLLAPSING!
+          </div>
+        </div>
+
+        <!-- Minimap Radar View & Top Menu Button -->
+        <div class="pointer-events-auto flex flex-col items-end gap-1.5">
+          <button id="btn-top-menu" type="button" class="px-3.5 py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border-2 border-amber-600/70 hover:border-amber-400 text-amber-300 hover:text-amber-100 text-xs font-mono font-bold tracking-wider flex items-center gap-1.5 shadow-lg active:scale-95 transition-all cursor-pointer backdrop-blur-sm">
+            <i class="ph-bold ph-list text-sm"></i> <span>MENU</span>
+          </button>
+          <div class="bg-black/90 backdrop-blur-sm p-1.5 rounded-xl border border-amber-900/60 shadow-xl flex flex-col items-center">
+            <canvas id="minimapCanvas" width="112" height="112" class="rounded-lg bg-zinc-950 border border-zinc-800"></canvas>
+            <span class="text-[9px] font-mono tracking-widest text-zinc-400 mt-1">4000M RADAR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Virtual Controls Row -->
+<!-- ... existing code ... -->
+```
+```html:Trench Run: Tank Royale - Iron Vanguard:index.html
+<!-- ... existing code ... -->
+        <button id="btn-redeploy" class="w-full py-3.5 px-6 rounded-xl font-military text-lg bg-gradient-to-r from-red-600 via-amber-500 to-red-600 text-zinc-950 font-bold hover:brightness-110 active:scale-95 transition-all shadow-lg border border-amber-300 cursor-pointer">
+          REDEPLOY TO COMBAT
+        </button>
+      </div>
+    </div>
+
+    <!-- In-Game Pause / Tactical Menu Modal -->
+    <div id="pause-modal" class="hidden absolute inset-0 bg-black/85 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
+      <div class="max-w-md w-full bg-zinc-900/95 border-2 border-amber-600/70 p-6 sm:p-7 rounded-2xl shadow-2xl relative">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold tracking-widest uppercase mb-2">
+          <i class="ph-bold ph-pause-circle text-sm"></i> TACTICAL PAUSE
+        </div>
+        <h2 class="font-military text-2xl sm:text-3xl text-amber-400 tracking-wider mb-1">MISSION MENU</h2>
+        <p class="text-xs text-zinc-400 font-mono mb-4">Operations suspended. Select an action.</p>
+
+        <div class="flex flex-col gap-2.5 mb-4">
+          <!-- Resume Button -->
+          <button id="btn-pause-resume" class="w-full py-3 px-4 rounded-xl font-military text-base bg-gradient-to-r from-emerald-600 to-emerald-500 text-zinc-950 font-bold hover:brightness-110 active:scale-95 transition-all shadow-lg border border-emerald-300 flex items-center justify-center gap-2 cursor-pointer">
+            <i class="ph-bold ph-play"></i> RESUME COMBAT
+          </button>
+
+          <!-- Restart Match Button -->
+          <button id="btn-pause-restart" class="w-full py-2.5 px-4 rounded-xl font-mono font-bold text-xs sm:text-sm bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 text-zinc-200 hover:text-amber-300 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <i class="ph-bold ph-arrow-counter-clockwise"></i> RESTART BATTLE
+          </button>
+
+          <!-- Surrender to Lobby Button -->
+          <button id="btn-pause-quit" class="w-full py-2.5 px-4 rounded-xl font-mono font-bold text-xs sm:text-sm bg-red-950/70 hover:bg-red-900/80 border border-red-700 text-red-200 hover:text-white active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <i class="ph-bold ph-door-open"></i> RETURN TO MAIN MENU
+          </button>
+        </div>
+
+        <div class="pt-3 border-t border-zinc-800 flex justify-between items-center text-[11px] font-mono text-zinc-400">
+          <span>PRESS [ESC] TO RESUME</span>
+          <button id="pause-sound-toggle-btn" class="text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer">
+            <i class="ph-bold ph-speaker-high" id="pause-sound-icon"></i> <span id="pause-sound-label">SFX: ON</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Combat Text Layer -->
+<!-- ... existing code ... -->
+```
+```html:Trench Run: Tank Royale - Iron Vanguard:index.html
+<!-- ... existing code ... -->
+      // Desktop controls
+      window.addEventListener('keydown', (e) => {
+        sound.init();
+        if (e.code === 'Space') {
+          keys.Space = true;
+          if (player && player.chassisType === 'scout') player.isFiringMG = true;
+        }
+        if (e.code === 'Escape') {
+          if (gameState === 'PLAYING') {
+            openPauseMenu();
+          } else if (gameState === 'PAUSED') {
+            closePauseMenu();
+          }
+        }
+        if (keys.hasOwnProperty(e.key)) keys[e.key] = true;
+      });
+
+      window.addEventListener('keyup', (e) => {
+<!-- ... existing code ... -->
+      const btnRedeploy = document.getElementById('btn-redeploy');
+      if (btnRedeploy) {
+        btnRedeploy.addEventListener('click', () => {
+          sound.init();
+          startBattleRoyale();
+        });
+      }
+
+      // In-Game Top Menu & Pause Modal Controls
+      const pauseModal = document.getElementById('pause-modal');
+      const btnTopMenu = document.getElementById('btn-top-menu');
+      const btnPauseResume = document.getElementById('btn-pause-resume');
+      const btnPauseRestart = document.getElementById('btn-pause-restart');
+      const btnPauseQuit = document.getElementById('btn-pause-quit');
+      const pauseSoundToggleBtn = document.getElementById('pause-sound-toggle-btn');
+      const pauseSoundLabel = document.getElementById('pause-sound-label');
+      const pauseSoundIcon = document.getElementById('pause-sound-icon');
+
+      function syncSoundUI() {
+        const statusText = document.getElementById('sound-status-text');
+        const icon = document.getElementById('sound-icon');
+        if (statusText) statusText.innerText = sound.enabled ? 'ENABLED' : 'MUTED';
+        if (icon) icon.className = sound.enabled ? 'ph-bold ph-speaker-high text-sm' : 'ph-bold ph-speaker-slash text-sm';
+        if (pauseSoundLabel) pauseSoundLabel.innerText = sound.enabled ? 'SFX: ON' : 'SFX: OFF';
+        if (pauseSoundIcon) pauseSoundIcon.className = sound.enabled ? 'ph-bold ph-speaker-high' : 'ph-bold ph-speaker-slash';
+      }
+
+      function openPauseMenu() {
+        if (gameState !== 'PLAYING') return;
+        gameState = 'PAUSED';
+        if (pauseModal) pauseModal.classList.remove('hidden');
+        syncSoundUI();
+      }
+
+      function closePauseMenu() {
+        if (gameState !== 'PAUSED') return;
+        if (pauseModal) pauseModal.classList.add('hidden');
+        gameState = 'PLAYING';
+      }
+
+      if (btnTopMenu) {
+        btnTopMenu.addEventListener('click', () => {
+          sound.init();
+          if (gameState === 'PLAYING') {
+            openPauseMenu();
+          } else if (gameState === 'PAUSED') {
+            closePauseMenu();
+          }
+        });
+      }
+
+      if (btnPauseResume) {
+        btnPauseResume.addEventListener('click', () => {
+          sound.init();
+          closePauseMenu();
+        });
+      }
+
+      if (btnPauseRestart) {
+        btnPauseRestart.addEventListener('click', () => {
+          sound.init();
+          if (pauseModal) pauseModal.classList.add('hidden');
+          startBattleRoyale();
+        });
+      }
+
+      if (btnPauseQuit) {
+        btnPauseQuit.addEventListener('click', () => {
+          sound.init();
+          if (pauseModal) pauseModal.classList.add('hidden');
+          const ingameHud = document.getElementById('ingame-hud');
+          const mainMenu = document.getElementById('main-menu');
+          if (ingameHud) ingameHud.classList.add('hidden');
+          if (mainMenu) mainMenu.classList.remove('hidden');
+          gameState = 'MENU';
+        });
+      }
+
+      if (pauseSoundToggleBtn) {
+        pauseSoundToggleBtn.addEventListener('click', () => {
+          sound.enabled = !sound.enabled;
+          syncSoundUI();
+        });
+      }
+
+      // Audio toggle
+      const toggleSoundBtn = document.getElementById('toggle-sound-btn');
+      if (toggleSoundBtn) {
+        toggleSoundBtn.addEventListener('click', () => {
+          sound.enabled = !sound.enabled;
+          syncSoundUI();
+        });
+      }
+
+      // Start RAF main loop cleanly
+      requestAnimationFrame(mainLoop);
+    });
+  </script>
+</body>
+</html>
